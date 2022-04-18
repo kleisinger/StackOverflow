@@ -1,0 +1,42 @@
+﻿@model StackOverload.Models.Question
+
+<h3>Create a Question</h3>
+
+<form asp-controller="Home" asp-action="PostQuestion" method="post">
+    <input type="hidden"  name="UserId" value="@ViewBag.UserId" />
+
+    <textarea type="text" name="title" placeholder="Question Title">@ViewBag.Title</textarea>
+    <br />
+
+    <p> Give as much context around your question as you can:</p> 
+    <textarea type="text" name="body" placeholder="Question Body">@ViewBag.Body</textarea>
+    <br />
+
+    <p> Select up to 3 tags that are related to your question:</p> 
+    
+     <select name="id1" asp-items="@ViewBag.Tags">
+         <option>Select 1st Tag</option>
+     </select>
+     <br />
+
+     <select name="id2" asp-items="@ViewBag.Tags">
+         <option>Select 2nd Tag</option>
+     </select>
+     <br />
+
+     <select name="id3" asp-items="@ViewBag.Tags">
+         <option>Select 3rd Tag</option>
+     </select>
+     <br />
+
+      <p> Note: You cannot select the same tag more than once.</p> 
+
+    <button type="submit">
+        Post Question
+    </button>
+
+</form>
+
+    <p style="color:red"> @ViewBag.Error </p>
+
+    <a asp-action="Index">Go Back</a>

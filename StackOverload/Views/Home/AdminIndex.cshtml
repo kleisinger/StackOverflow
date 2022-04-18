@@ -1,0 +1,72 @@
+﻿@model IEnumerable<StackOverload.Models.Question>
+
+<div class="text-center">
+    <h1 class="display-4">Admin View</h1>
+
+    <div>
+        <a asp-controller="Home" asp-action="Index">User View</a>
+    </div>
+</div>
+
+<h3>Recent Questions</h3>
+
+<div>
+    <form asp-controller="Home" asp-action="Index" method="get">
+        <input type="hidden" name="date" value="date"/>
+        <button type="submit">
+            By Date
+        </button>
+    </form>
+
+    <form asp-controller="Home" asp-action="Index" method="get">
+        <input type="hidden" name="count" value="count"/>
+        <button type="submit">
+            # Of Answers
+        </button>
+    </form>
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Answers</th>
+            <th>User</th>
+            <th>Date Posted</th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th>Tags</th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) 
+    {
+        <tr>
+            <td>@item.Title</td>
+            <td>@item.Answers.Count</td>
+            <td>@item.User.UserName</td>
+            <td>@item.PostDate</td>
+ 
+
+            @if(item.TagQuestions != null)
+            {
+                @foreach(var tag in item.TagQuestions)
+                {
+                   <td> <a asp-action="TagSearch" asp-route-id="@tag.Tag.Id">@tag.Tag.Name</a> </td> 
+                }
+            }
+           @* DELETE POST *@
+            <td>
+                    <form asp-controller="Home" asp-action="AdminIndex" method="post">
+                        <input type="hidden" name="questionId" value="@item.Id"/>
+
+                        <button type="submit">
+                            Delete Post
+                        </button>
+                    </form>
+                </td>
+        </tr>
+    }
+    </tbody>
+</table>

@@ -1,0 +1,25 @@
+﻿@model StackOverload.Models.Answer
+
+<h3>Create an Answer</h3>
+
+<form asp-controller="Home" asp-action="PostAnswer" method="post">
+    <input type="hidden"  name="userId" value="@ViewBag.UserId" />
+    <input type="hidden"  name="questionId" value="@ViewBag.QuestionId" />
+
+    <textarea id="mytextarea" type="text" name="body" placeholder="Enter Your Answer">@ViewBag.Body</textarea>
+    <br />
+
+    <button type="submit">
+        Post Answer
+    </button>
+</form>
+
+<a asp-action="Index">Go Back</a>
+
+   @* <p style="color:red"> @ViewBag.Error </p>*@
+
+
+@section Scripts{
+    <script src="/path/to/tinymce.min.js"></script>
+    <script type="text/javascript">tinymce.init({selector: '#mytextarea'});</script>
+}

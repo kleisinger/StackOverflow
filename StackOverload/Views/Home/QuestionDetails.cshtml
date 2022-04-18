@@ -1,0 +1,176 @@
+﻿@model IEnumerable<StackOverload.Models.Answer>
+
+
+<h3>@ViewBag.CurrentQuestion.Title:</h3>
+<p style="font-size: 20px">@ViewBag.CurrentQuestion.Body</p>
+<p>from: @ViewBag.CurrentQuestion.User.UserName</p>
+<p style="font-size: 14px">Tags:</p>
+@foreach(var item in @ViewBag.Tags)
+{
+    <a asp-action="TagSearch" asp-route-id="@item.Tag.Id">@item.Tag.Name</a>
+}
+<br />
+
+@if(ViewBag.CurrentUser != null)
+{
+    <div>
+        <a asp-action="PostComment" asp-route-user="@ViewBag.CurrentUser.Id" asp-route-questionId="@ViewBag.CurrentQuestion.Id">Comment</a>
+    </div> 
+
+    @if(ViewBag.CurrentUser != @ViewBag.CurrentQuestion.User)
+            {
+                <td>
+                    <form asp-controller="Home" asp-action="QuestionVote" method="post">
+                        <input type="hidden" name="user" value="@ViewBag.CurrentUser.Id"/>
+                        <input type="hidden" name="questionId" value="@ViewBag.CurrentQuestion.Id"/>
+                        <input type="hidden" name="voteType" value="upVote"/>
+
+                        <button type="submit">
+                            Up Vote
+                        </button>
+                    </form>
+
+                    <form asp-controller="Home" asp-action="QuestionVote" method="post">
+                        <input type="hidden" name="user" value="@ViewBag.CurrentUser.Id"/>
+                        <input type="hidden" name="questionId" value="@ViewBag.CurrentQuestion.Id"/>
+                        <input type="hidden" name="voteType" value="downVote"/>
+
+                        <button type="submit">
+                            Down Vote
+                        </button>
+                    </form>
+                </td>
+            }
+}
+
+ 
+            
+<p style="font-size: 20px">@ViewBag.Message</p>
+
+@*ANSWERS TABLE*@
+<table class="table">
+    <thead>
+        <tr>
+            <th></th>
+            <th>Answers</th>
+            <th>Date Posted</th>
+            <th>User</th>
+            <th>Votes</th>
+            <th></th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            @if(@item.IsCorrect == true)
+                {
+                   <td><strong>Selected Answer</strong></td> 
+                }
+             @if(@item.IsCorrect == false)
+                {
+                    <td></td>
+                }
+
+            <td>@item.Body</td>
+            <td>@item.PostDate</td>
+            <td>@item.User.UserName</td>
+            <td>@item.Votes.Count</td>
+
+            @if(ViewBag.CurrentUser != null)
+                {
+                    <td><a asp-action="PostComment" asp-route-user="@ViewBag.CurrentUser.Id" asp-route-answerId="@item.Id">Comment</a></td>
+
+                    @* VOTE ANSWER *@
+                    @if(ViewBag.CurrentUser != @item.User)
+                    {
+                        <td>
+                            <form asp-controller="Home" asp-action="AnswerVote" method="post">
+                                <input type="hidden" name="user" value="@ViewBag.CurrentUser.Id"/>
+                                <input type="hidden" name="answerId" value="@item.Id"/>
+                                <input type="hidden" name="questionId" value="@item.Question.Id"/>
+                                <input type="hidden" name="voteType" value="upVote"/>
+
+                                <button type="submit">
+                                    Up Vote
+                                </button>
+                            </form>
+
+                            <form asp-controller="Home" asp-action="AnswerVote" method="post">
+                                <input type="hidden" name="user" value="@ViewBag.CurrentUser.Id"/>
+                                <input type="hidden" name="answerId" value="@item.Id"/>
+                                <input type="hidden" name="questionId" value="@item.Question.Id"/>
+                                <input type="hidden" name="voteType" value="downVote"/>
+
+                                <button type="submit">
+                                    Down Vote
+                                </button>
+                            </form>
+                        </td>
+                    }
+
+                    @*SELECT ANSWER *@
+                    @if(ViewBag.CurrentUser == ViewBag.CurrentQuestion.User && ViewBag.CurrentQuestion.IsAnswered == false)
+                    {
+                        <td>
+                            <form asp-controller="Home" asp-action="SelectAnswer" method="post">
+                                <input type="hidden" name="questionId" value="@item.Question.Id"/>
+                                <input type="hidden" name="answerId" value="@item.Id"/>
+                                <input type="hidden" name="userId" value="@ViewBag.CurrentUser.Id"/>
+
+                                <button type="submit">
+                                    Select Answer
+                                </button>
+                            </form>
+                        </td>
+                    }   
+                }
+        </tr>
+
+            if(@item.Comments.Count > 0)
+            {                
+                @foreach(var comment in @item.Comments)
+                {
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td style="font-size: 12px">answer comment</td>
+                    <td style="font-size: 12px">@comment.Body</td>
+                    <td style="font-size: 12px">@comment.PostDate</td>
+                    <td style="font-size: 12px">@comment.User</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                }
+            }
+        }
+    </tbody>
+</table>
+
+
+@*COMMENTS TABLE*@
+<table class="table">
+    <thead>
+        <tr>
+            <th></th>
+            <th>Question Comments</th>
+            <th>Date Posted</th>
+            <th>User</th>
+
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in ViewBag.CurrentQuestion.Comments) {
+        <tr>
+            <td></td>
+            <td style="font-size: 12px">@item.Body</td>
+            <td style="font-size: 12px">@item.PostDate</td>
+            <td style="font-size: 12px">@item.User</td>
+         </tr>   
+        }
+    </tbody>
+</table>

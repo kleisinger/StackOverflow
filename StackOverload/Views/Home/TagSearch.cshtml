@@ -1,0 +1,31 @@
+﻿@model IEnumerable<StackOverload.Models.TagQuestion>
+
+<h3>@ViewBag.Tag.Name Questions</h3>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Answers</th>
+            <th>User</th>
+            <th>Date Posted</th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>@item.Question.Title</td>
+            <td>@item.Question.Answers.Count</td>
+            <td>@item.Question.User.UserName</td>
+            <td>@item.Question.PostDate</td>
+            <td>
+                <a asp-action="PostAnswer" asp-route-userName="@ViewBag.CurrentUserName" asp-route-questionId="@item.Question.Id">Answer This Question</a> |
+                <a asp-action="QuestionDetails" asp-route-questionId="@item.Question.Id">Question Details</a> 
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
